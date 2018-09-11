@@ -4,7 +4,7 @@
   "author": "pistis (vamalboro@gmail.com)",
   "description": "This is a capture program developed with electron",
   "license": "MIT",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron ."
   },

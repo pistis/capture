@@ -32,7 +32,7 @@ const activeSelectorWindow = () => {
     titleBarStyle: 'hiddenInset',
   });
 
-  selector.loadFile(`${app.getAppPath()}/renderer/selector.html`);
+  selector.loadFile(`${app.getAppPath()}/renderer/selector/index.html`);
   selector.setAlwaysOnTop(true, 'screen-saver', 1);
   selector.setVisibleOnAllWorkspaces(true);
   selector.webContents.on('did-finish-load', () => {

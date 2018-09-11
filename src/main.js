@@ -5,7 +5,7 @@ app.on('ready', async () => {
 });
 
 app.on('will-quit', () => {
-  globalShortcut.unregister('Command+Shift+4');
+  globalShortcut.unregister('Command+Shift+3');
 
   globalShortcut.unregisterAll();
 });
