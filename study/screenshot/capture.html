@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Working with Screnshots!</title>
+</head>
+<body>
+    <div>
+        <img id="image-preview" />
+        <input type="button" id="create-screenshot" />
+    </div>
+    <script>
+        /**
+         * Create a screenshot of our app from a  fullscreenshot cropping it with Jimp module !
+         */
+        document.getElementById("create-screenshot").addEventListener("click", function() {
+            var Jimp = require("jimp");
+
+            fullscreenScreenshot(function(base64data){
+                // add to buffer base64 image instead of saving locally in order to manipulate with Jimp
+                var encondedImageBuffer = new Buffer(base64data.replace(/^data:image\/(png|gif|jpeg);base64,/,''), 'base64');
+
+                var height = window.innerHeight;
+                var width = window.innerWidth;
+                var distanceX = window.screenLeft;
+                var distanceY = window.screenTop;
+                var screenDimensions = screen.getPrimaryDisplay().size;
+                var screenHeight = screenDimensions.height;
+                var screenWidth = screenDimensions.width;
+
+                Jimp.read(encondedImageBuffer, function (err, image) {
+                    if (err) throw err;
+
+                    // Show the original width and height of the image in the console
+                    console.log(image.bitmap.width, image.bitmap.height);
+
+                    // Resize the image to the size of the screen
+                    image.resize(screenWidth, screenHeight)
+                    // Crop image according to the coordinates
+                    // add some margin pixels for this example
+                    image.crop(distanceX + 10, distanceY - 10, width + 10, height + 50)
+                    // Get data in base64 and show in img tag
+                    .getBase64('image/jpeg', function(err,base64data){
+                        document.getElementById("image-preview").setAttribute("src", base64data);
+                        //console.log(data);
+                    });
+                });
+            },"image/jpeg");
+        }, false);
+    </script>
+</body>
+</html>
