@@ -1,7 +1,19 @@
-const { app, globalShortcut } = require('electron');
+const { app, globalShortcut, ipcMain } = require('electron');
 const { activeSelectorWindow } = require('./selector');
+const { captureScreen } = require('../renderer/selector/capturer');
 app.on('ready', async () => {
-  globalShortcut.register('Command+Shift+3', activeSelectorWindow);
+  globalShortcut.register('Command+Shift+5', activeSelectorWindow);
+  // ipcMain.on('capture-screen', (event) => {
+  //   console.log('capture-screen');
+  //   captureScreen()
+  //     .then((stream) => {
+  //       event.sender.send('captured-screen', stream);
+  //     })
+  //     .catch(() => {
+  //       console.log('exception capture');
+  //     });
+  //   // event.sender.send('asynchronous-reply', 'pong')
+  // });
   // test
   // let mainWindow = new BrowserWindow({
   //   width: 1024,
@@ -14,8 +26,7 @@ app.on('ready', async () => {
 });
 
 app.on('will-quit', () => {
-  globalShortcut.unregister('Command+Shift+3');
-
+  globalShortcut.unregister('Command+Shift+5');
   globalShortcut.unregisterAll();
 });
 

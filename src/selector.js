@@ -1,6 +1,6 @@
 const electron = require('electron');
 const { app, BrowserWindow } = electron;
-let selector = null;
+let selectorWindow = null;
 
 const activeSelectorWindow = () => {
   const { screen } = electron;
@@ -17,7 +17,7 @@ const activeSelectorWindow = () => {
   const { bounds } = pointedDisplay;
   const { x, y, width, height } = bounds;
 
-  selector = new BrowserWindow({
+  selectorWindow = new BrowserWindow({
     x,
     y,
     width,
@@ -29,13 +29,13 @@ const activeSelectorWindow = () => {
     frame: false,
     transparent: true,
     show: false,
-    titleBarStyle: 'hiddenInset',
   });
 
-  selector.loadFile(`${app.getAppPath()}/renderer/selector/index.html`);
-  selector.setAlwaysOnTop(true, 'screen-saver', 1);
-  selector.setVisibleOnAllWorkspaces(true);
-  selector.webContents.on('did-finish-load', () => {
+  console.log('activeDisplayId ', activeDisplayId);
+  selectorWindow.loadFile(`${app.getAppPath()}/renderer/selector/index.html`);
+  selectorWindow.setAlwaysOnTop(true, 'screen-saver', 1);
+  selectorWindow.setVisibleOnAllWorkspaces(true);
+  selectorWindow.webContents.on('did-finish-load', () => {
     const displayInfo = {
       id: activeDisplayId,
       x,
@@ -43,12 +43,14 @@ const activeSelectorWindow = () => {
       width,
       height,
     };
-    selector.webContents.send('display', displayInfo);
+    selectorWindow.webContents.send('display', displayInfo);
   });
 
-  selector.showInactive();
-  selector.focus();
-  // TODO :
+  selectorWindow.showInactive();
+  selectorWindow.focus();
+  selectorWindow.on('closed', () => {
+    selectorWindow = null;
+  });
 };
 
 module.exports = {
