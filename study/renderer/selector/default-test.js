@@ -1,5 +1,6 @@
 const electron = require('electron');
 const { captureScreen } = require('./capturer');
+const copyToClipboard = require('./copyToClipboard');
 const { ipcRenderer } = electron;
 
 ipcRenderer.on('display', (event, displayInfo) => {
@@ -8,6 +9,7 @@ ipcRenderer.on('display', (event, displayInfo) => {
   captureScreen(displayInfo.id, displayInfo.width, displayInfo.height)
     .then((stream) => {
       console.log('captured screen', stream);
+      copyToClipboard(stream); // 일단 여기서 복사한다.
       const imageFormat = 'image/webp';
       // Create hidden video tag
       const video = document.createElement('video');
