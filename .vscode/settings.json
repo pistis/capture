@@ -1,4 +1,13 @@
 {
-  "eslint.autoFixOnSave": true,
-  "prettier.eslintIntegration": true
+    "eslint.autoFixOnSave": true,
+    "prettier.eslintIntegration": true,
+    "background.enabled": true,
+    "background.useDefault": false,
+    "background.customImages": ["https://pbs.twimg.com/media/C_zBvNBUwAAMAJB.jpg"],
+    "background.style": {
+        "opacity": 0.2,
+        "background-size": "100%",
+        "background-repeat": "no-repeat",
+        "background-position": "center center"
+    }
 }
