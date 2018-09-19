@@ -2,10 +2,12 @@ const electron = require('electron');
 const { app, BrowserWindow } = electron;
 let selectorWindow = null;
 
-const activeSelectorWindow = () => {
+const selectorPath = `${app.getAppPath()}/study/renderer/selector/index.html`;
+
+const openSelectorWindow = () => {
   const { screen } = electron;
   const displays = screen.getAllDisplays();
-  //   console.log(JSON.stringify(displays, null, 2));
+
   const activeDisplayId = screen.getDisplayNearestPoint(
     screen.getCursorScreenPoint()
   ).id;
@@ -13,7 +15,7 @@ const activeSelectorWindow = () => {
   const pointedDisplay = displays.find((display) => {
     return display.id === activeDisplayId;
   });
-  //   console.log(JSON.stringify(pointedDisplay, null, 2));
+
   const { bounds } = pointedDisplay;
   const { x, y, width, height } = bounds;
 
@@ -32,7 +34,7 @@ const activeSelectorWindow = () => {
   });
 
   console.log('activeDisplayId ', activeDisplayId);
-  selectorWindow.loadFile(`${app.getAppPath()}/renderer/selector/index.html`);
+  selectorWindow.loadFile(selectorPath);
   selectorWindow.setAlwaysOnTop(true, 'screen-saver', 1);
   selectorWindow.setVisibleOnAllWorkspaces(true);
   selectorWindow.webContents.on('did-finish-load', () => {
@@ -54,5 +56,5 @@ const activeSelectorWindow = () => {
 };
 
 module.exports = {
-  activeSelectorWindow,
+  openSelectorWindow,
 };

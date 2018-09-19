@@ -33,7 +33,11 @@ const previewCapture = (base64data, rect) => {
       .crop(distanceX, distanceY, width, height)
       // Get data in base64 and show in img tag
       .getBase64('image/jpeg', function(err, base64data) {
-        document.getElementById('preview').setAttribute('src', base64data);
+        const preview = document.getElementById('preview');
+        preview.setAttribute('src', base64data);
+        preview.style.cssText = `width:${rect.width}px;height:${
+          rect.height
+        }px;`;
         //console.log(data);
       });
   });
@@ -61,15 +65,15 @@ ipcRenderer.on('display', (event, displayInfo) => {
         // Draw video on canvas
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        // previewCapture(canvas.toDataURL(imageFormat), {
-        //   x: 500,
-        //   y: 0,
-        //   width: 400,
-        //   height: 300,
-        // });
-        document
-          .getElementById('preview')
-          .setAttribute('src', canvas.toDataURL(imageFormat)); // TODO: 퀄리티가 jimp 사용시보다 좋다.
+        previewCapture(canvas.toDataURL(imageFormat), {
+          x: 500,
+          y: 0,
+          width: 400,
+          height: 300,
+        });
+        // document
+        //   .getElementById('preview')
+        //   .setAttribute('src', canvas.toDataURL(imageFormat)); // TODO: 퀄리티가 jimp 사용시보다 좋다.
 
         // Remove hidden video tag
         video.remove();
