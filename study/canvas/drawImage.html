@@ -1,0 +1,138 @@
+<html>
+    <head>
+        <style>
+        canvas {
+            margin: 0;
+            padding: 0;
+        }
+        </style>
+    </head>
+    <body>
+        <p>Image to use:</p>
+        <img id="twiceImage" style="width: 963px; height: 681px;" src="https://social.lge.co.kr/wp-content/uploads/2017/09/twice_%EB%8C%80%EB%AC%B8.jpg" />
+        <p>Canvas:</p>
+        <div>
+            <canvas id="twiceCanvasLeftTop" style="border:0;display:inline-block;">Your browser does not support the HTML5 canvas tag.</canvas>
+            <canvas id="twiceCanvasRightTop" style="border:0;display:inline-block;">Your browser does not support the HTML5 canvas tag.</canvas>
+        </div>
+        <div>
+            <canvas id="twiceCanvasLeftBottom" style="border:0;display:inline-block;">Your browser does not support the HTML5 canvas tag.</canvas>
+            <canvas id="twiceCanvasRightBottom" style="border:0;display:inline-block;">Your browser does not support the HTML5 canvas tag.</canvas>
+        </div>
+        <div>
+            <canvas id="twiceCanvasFullsize" style="border:0;display:inline-block;">Your browser does not support the HTML5 canvas tag.</canvas>
+        </div>
+        
+        <script>
+        function leftTop(originWidth, originHeight) {
+            var sourceWidth = originWidth / 2;
+            var sourceHeight = originHeight / 2;
+            var destWidth = sourceWidth
+            var destHeight = sourceHeight
+            return {
+                sourceX: 0,
+                sourceY: 0,
+                sourceWidth,
+                sourceHeight,
+                destX: 0,
+                destY: 0,
+                destWidth,
+                destHeight
+            }
+        }
+        function leftBottom(originWidth, originHeight) {
+            var sourceWidth = originWidth / 2;
+            var sourceHeight = originHeight / 2;
+            var destWidth = sourceWidth
+            var destHeight = sourceHeight
+            return {
+                sourceX: 0,
+                sourceY: sourceHeight,
+                sourceWidth,
+                sourceHeight,
+                destX: 0,
+                destY: 0,
+                destWidth,
+                destHeight
+            }
+        }
+        function rightTop(originWidth, originHeight) {
+            var sourceWidth = originWidth / 2;
+            var sourceHeight = originHeight / 2;
+            var destWidth = sourceWidth
+            var destHeight = sourceHeight
+            return {
+                sourceX: sourceWidth,
+                sourceY: 0,
+                sourceWidth,
+                sourceHeight,
+                destX: 0,
+                destY: 0,
+                destWidth,
+                destHeight
+            }
+        }
+        function rightBottom(originWidth, originHeight) {
+            var sourceWidth = originWidth / 2;
+            var sourceHeight = originHeight / 2;
+            var destWidth = sourceWidth
+            var destHeight = sourceHeight
+            return {
+                sourceX: sourceWidth,
+                sourceY: sourceHeight,
+                sourceWidth,
+                sourceHeight,
+                destX: 0,
+                destY: 0,
+                destWidth,
+                destHeight
+            }
+        }
+        window.onload = function() {
+            var img = document.getElementById("twiceImage");
+
+            var originWidth = 963;
+            var originHeight = 681;
+
+            // left top
+            var leftTopCanvas = document.getElementById("twiceCanvasLeftTop");
+            var leftTopCtx = leftTopCanvas.getContext("2d");
+            var params = leftTop(originWidth, originHeight);
+            leftTopCanvas.width = params.destWidth;
+            leftTopCanvas.height = params.destHeight;
+            leftTopCtx.drawImage(img, params.sourceX, params.sourceY, params.sourceWidth, params.sourceHeight, params.destX, params.destY, params.destWidth, params.destHeight);
+
+            // right top
+            var rightTopCanvas = document.getElementById("twiceCanvasRightTop");
+            var rightTopCtx = rightTopCanvas.getContext("2d");
+            var params = rightTop(originWidth, originHeight);
+            rightTopCanvas.width = params.destWidth;
+            rightTopCanvas.height = params.destHeight;
+            rightTopCtx.drawImage(img, params.sourceX, params.sourceY, params.sourceWidth, params.sourceHeight, params.destX, params.destY, params.destWidth, params.destHeight);
+
+            // left bottom
+            var leftBottomCanvas = document.getElementById("twiceCanvasLeftBottom");
+            var leftBottomCtx = leftBottomCanvas.getContext("2d");
+            var params = leftBottom(originWidth, originHeight);
+            leftBottomCanvas.width = params.destWidth;
+            leftBottomCanvas.height = params.destHeight;
+            leftBottomCtx.drawImage(img, params.sourceX, params.sourceY, params.sourceWidth, params.sourceHeight, params.destX, params.destY, params.destWidth, params.destHeight);
+
+            // right bottom
+            var rightBottomCanvas = document.getElementById("twiceCanvasRightBottom");
+            var rightBottomCtx = rightBottomCanvas.getContext("2d");
+            var params = rightBottom(originWidth, originHeight);
+            rightBottomCanvas.width = params.destWidth;
+            rightBottomCanvas.height = params.destHeight;
+            rightBottomCtx.drawImage(img, params.sourceX, params.sourceY, params.sourceWidth, params.sourceHeight, params.destX, params.destY, params.destWidth, params.destHeight);
+
+            // full size
+            var fullsizeCanvas = document.getElementById("twiceCanvasFullsize");
+            var fullsizeCtx = fullsizeCanvas.getContext("2d");
+            fullsizeCanvas.width = originWidth;
+            fullsizeCanvas.height = originHeight;
+            fullsizeCtx.drawImage(img, 0, 0);
+        };
+        </script>
+    </body>
+</html>
