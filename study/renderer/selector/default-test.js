@@ -4,8 +4,6 @@ const copyToClipboard = require('./copyToClipboard');
 const { ipcRenderer } = electron;
 
 ipcRenderer.on('display', (event, displayInfo) => {
-  console.log(`displayInfo ${JSON.stringify(displayInfo)}`); // TODO : can use displayInfo later.
-
   captureScreen(displayInfo.id, displayInfo.width, displayInfo.height)
     .then((stream) => {
       const imageFormat = 'image/png';
