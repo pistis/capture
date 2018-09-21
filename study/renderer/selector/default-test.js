@@ -4,13 +4,9 @@ const copyToClipboard = require('./copyToClipboard');
 const { ipcRenderer } = electron;
 
 ipcRenderer.on('display', (event, displayInfo) => {
-  console.log(`displayInfo ${JSON.stringify(displayInfo)}`); // TODO : can use displayInfo later.
-
   captureScreen(displayInfo.id, displayInfo.width, displayInfo.height)
     .then((stream) => {
-      console.log('captured screen', stream);
-      copyToClipboard(stream); // 일단 여기서 복사한다.
-      const imageFormat = 'image/webp';
+      const imageFormat = 'image/png';
       // Create hidden video tag
       const video = document.createElement('video');
       video.style.cssText = 'position:absolute;top:-10000px;left:-10000px;';
@@ -28,10 +24,10 @@ ipcRenderer.on('display', (event, displayInfo) => {
         // Draw video on canvas
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        document
-          .getElementById('preview')
-          .setAttribute('src', canvas.toDataURL(imageFormat)); // TODO: 퀄리티가 jimp 사용시보다 좋다.
+        const data = canvas.toDataURL(imageFormat);
+        document.getElementById('preview').setAttribute('src', data); // TODO: 퀄리티가 jimp 사용시보다 좋다.
 
+        copyToClipboard(data); // 일단 여기서 복사한다.
         // Remove hidden video tag
         video.remove();
         try {
