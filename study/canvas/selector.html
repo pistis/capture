@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Selector</title>
+<style>
+.resize-drag {
+  background-color: transparent;
+  color: red;
+  font-size: 20px;
+  font-family: sans-serif;
+
+  width: 300px;
+  height: 300px;
+
+  outline-color: rgba(51, 153, 255, 0.75);
+  outline: 3px dashed #39f;
+}
+
+.resize-container {
+  position: absolute;
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+}
+.modal {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .5;
+}
+</style>
+</head>
+
+<body>
+<img src="./twice.jpg" style="position: absolute;" />
+<div class="modal"></div>
+<div class="resize-container">
+  <div class="resize-drag">
+      Resize from any edge or corner
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/interactjs@1.3/dist/interact.min.js"></script>
+<script>
+
+
+function dragMoveListener (event) {
+    var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+    target.style.transform =
+      'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the posiion attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+  }
+window.addEventListener('load', () => {
+  interact('.resize-drag')
+  .draggable({
+    onmove: window.dragMoveListener,
+    restrict: {
+      restriction: 'parent',
+      elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+    },
+  })
+  .resizable({
+    // resize from all edges and corners
+    edges: { left: true, right: true, bottom: true, top: true },
+
+    // keep the edges inside the parent
+    restrictEdges: {
+      outer: 'parent',
+      endOnly: true,
+    },
+
+    // minimum size
+    restrictSize: {
+      min: { width: 100, height: 50 },
+    },
+
+    inertia: true,
+  })
+  .on('resizemove', function (event) {
+    var target = event.target,
+        x = (parseFloat(target.getAttribute('data-x')) || 0),
+        y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+    // update the element's style
+    target.style.width  = event.rect.width + 'px';
+    target.style.height = event.rect.height + 'px';
+
+    // translate when resizing from top or left edges
+    x += event.deltaRect.left;
+    y += event.deltaRect.top;
+
+    target.style.webkitTransform = target.style.transform =
+        'translate(' + x + 'px,' + y + 'px)';
+
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
+    target.textContent = `
+    x : ${x},
+    y : ${y},
+    w : ${Math.round(event.rect.width)},
+    h : ${Math.round(event.rect.height)}\n
+    `
+    // target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height);
+  });
+})
+</script>
+</body>
+</html>
