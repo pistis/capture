@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Draw a rectangle!</title>
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+<script>
+function init(canvas) {
+  canvas.addEventListener('mousedown', mouseDown, false);
+  canvas.addEventListener('mouseup', mouseUp, false);
+  canvas.addEventListener('mousemove', mouseMove, false);
+}
+
+function mouseDown(e) {
+  rect.startX = e.pageX - this.offsetLeft;
+  rect.startY = e.pageY - this.offsetTop;
+  drag = true;
+}
+function mouseUp() {
+  drag = false;
+}
+function mouseMove(e) {
+  if (drag) {
+    rect.w = (e.pageX - this.offsetLeft) - rect.startX;
+    rect.h = (e.pageY - this.offsetTop) - rect.startY ;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    draw();
+  }
+}
+function draw() {
+  ctx.strokeRect(rect.startX, rect.startY, rect.w, rect.h);
+}
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const rect = {};
+let drag = false;
+
+init(canvas)
+</script>
+</body>
+</html>
