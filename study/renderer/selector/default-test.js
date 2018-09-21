@@ -7,7 +7,7 @@ const Cropper = require('cropperjs');
 const initCropper = (canvas, cropCallback) => {
   const cropper = new Cropper(canvas, {
     zoomable: false,
-    crop: cropCallback,
+    crop: cropCallback, // TODO : 값을 저장해놓다가 완료버튼을 제공하여 해당 타이밍에만 캡쳐 하도록
   });
 };
 
