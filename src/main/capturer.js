@@ -4,7 +4,7 @@ let selectorWindow = null;
 
 const selectorPath = `${app.getAppPath()}/study/renderer/selector/index.html`;
 
-const openSelectorWindow = () => {
+const openCaptureWindow = () => {
   const { screen } = electron;
   const displays = screen.getAllDisplays();
 
@@ -56,5 +56,5 @@ const openSelectorWindow = () => {
 };
 
 module.exports = {
-  openSelectorWindow,
+  openCaptureWindow,
 };

@@ -1,8 +1,8 @@
 const { app, globalShortcut } = require('electron');
-const { openSelectorWindow } = require('./selector');
+const { openCaptureWindow } = require('./capturer');
 
 app.on('ready', async () => {
-  globalShortcut.register('Command+Shift+5', openSelectorWindow);
+  globalShortcut.register('Command+Shift+5', openCaptureWindow);
 });
 
 app.on('will-quit', () => {

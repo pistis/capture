@@ -4,14 +4,17 @@ const copyToClipboard = require('./copyToClipboard');
 const { ipcRenderer } = electron;
 
 ipcRenderer.on('display', (event, displayInfo) => {
+  console.time('capture-screen');
   captureScreen(displayInfo.id, displayInfo.width, displayInfo.height)
     .then((stream) => {
+      console.timeEnd('capture-screen');
       const imageFormat = 'image/png';
       // Create hidden video tag
       const video = document.createElement('video');
       video.style.cssText = 'position:absolute;top:-10000px;left:-10000px;';
       // Event connected to stream
       video.onloadedmetadata = function() {
+        console.timeEnd('video-stream-load');
         // Set video ORIGINAL height (screenshot)
         video.style.height = this.videoHeight + 'px'; // videoHeight
         video.style.width = this.videoWidth + 'px'; // videoWidth
@@ -22,12 +25,25 @@ ipcRenderer.on('display', (event, displayInfo) => {
         canvas.height = this.videoHeight;
         const ctx = canvas.getContext('2d');
         // Draw video on canvas
+        console.time('canvas-draw-image-video');
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.font = 'italic 200pt Calibri';
+        ctx.fillStyle = 'white';
+        ctx.fillText('Captured!!', canvas.width / 2, canvas.height / 2);
+        canvas.style.cssText =
+          'position:absolute;top:0;left:0;width:100%;height:100%;padding:0;margin:0;';
+        document.body.appendChild(canvas);
+        console.timeEnd('canvas-draw-image-video');
 
-        const data = canvas.toDataURL(imageFormat);
-        document.getElementById('preview').setAttribute('src', data); // TODO: 퀄리티가 jimp 사용시보다 좋다.
+        console.time('preview-captured-image');
+        // const data = canvas.toDataURL(imageFormat);
+        // document.getElementById('preview').setAttribute('src', data); // TODO: 퀄리티가 jimp 사용시보다 좋다.
+        console.timeEnd('preview-captured-image');
 
-        copyToClipboard(data); // 일단 여기서 복사한다.
+        setTimeout(() => {
+          copyToClipboard(canvas, imageFormat);
+        }, 1000);
+
         // Remove hidden video tag
         video.remove();
         try {
@@ -38,6 +54,7 @@ ipcRenderer.on('display', (event, displayInfo) => {
         }
       };
       // video.src = URL.createObjectURL(stream);
+      console.time('video-stream-load');
       video.srcObject = stream; // old browser may not have this property
       document.body.appendChild(video);
     })
