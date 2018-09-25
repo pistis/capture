@@ -1,17 +1,21 @@
+
 # Capture
 This is capture program developed with electron
 
-# Status
+## Capture
+Capture is a program that helps you capture your desktop screen.
+
+## Status
 The first version is under development.
-## Goal
+### Goal
 - Specify and edit specific areas of the PC screen (rectangle highlight, etc.)
 - Can download / copy edited screen.
 
-# Dev
+## Dev
 ```
 $ npm start
 ```
 
-# Usage
-## Shortcut
+## Usage
+### Shortcut
 Cmd+Shift+5
