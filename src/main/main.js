@@ -1,4 +1,4 @@
-const { app, globalShortcut } = require('electron');
+const { app, globalShortcut, ipcMain } = require('electron');
 const { openCaptureWindow } = require('./capturer');
 
 app.on('ready', async () => {

@@ -1,8 +1,8 @@
 const electron = require('electron');
-const { app, BrowserWindow } = electron;
+const { app, BrowserWindow, ipcMain } = electron;
 let selectorWindow = null;
 
-const selectorPath = `${app.getAppPath()}/study/renderer/selector/index.html`;
+const selectorPath = `${app.getAppPath()}/study/renderer/selector/index.html`; // TODO : need to change real implementation page
 
 const openCaptureWindow = () => {
   const { screen } = electron;
@@ -52,6 +52,11 @@ const openCaptureWindow = () => {
   selectorWindow.focus();
   selectorWindow.on('closed', () => {
     selectorWindow = null;
+    console.log(`closed ${activeDisplayId}`);
+  });
+
+  ipcMain.once('close', () => {
+    selectorWindow.close();
   });
 };
 
