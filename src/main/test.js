@@ -44,7 +44,51 @@ const shellTest = () => {
 
   shell.showItemInFolder(downloaddir); // finder를 지정 경로로 열기
 };
+
+const dialogTest = () => {
+  const { dialog } = require('electron');
+
+  const homedir = os.homedir();
+  console.log('home dir', homedir);
+  const downloaddir = path.resolve(homedir, './capture_download');
+  console.log('download dir', downloaddir);
+
+  if (fs.existsSync(`${downloaddir}`)) {
+    console.log('exist');
+  } else {
+    fs.mkdirSync(downloaddir);
+    console.log('not exist');
+  }
+
+  dialog.showSaveDialog(
+    {
+      title: '이것은? capture 다운로드',
+      // properties: ['openDirectory', 'createDirectory', 'showHiddenFiles'],
+      filters: [{ name: 'Images', extensions: ['png'] }],
+      buttonLabel: '저장!', // 저장 버튼
+      defaultPath: downloaddir,
+    },
+    (filePaths) => {
+      console.log('save file path', filePaths); //취소시에 undefined
+      if (filePaths) {
+        dialog.showMessageBox(
+          {
+            type: 'none', // "none", "info", "error", "question", "warning"
+            title: 'Oh!',
+            message: `saved ${filePaths}`,
+            detail: 'additional information',
+            buttons: ['확인'],
+          },
+          (buttonIndex) => {
+            console.log('buttonIndex', buttonIndex);
+          }
+        );
+      }
+    }
+  );
+};
 module.exports = {
   screenTest,
   shellTest,
+  dialogTest,
 };
