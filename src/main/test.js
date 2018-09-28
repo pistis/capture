@@ -1,4 +1,7 @@
 const electron = require('electron');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
 
 const screenTest = () => {
   const { screen } = electron;
@@ -25,6 +28,23 @@ const screenTest = () => {
   console.log('size', JSON.stringify(pointedDisplay.size)); //상단 Tray bar 포함
   console.log('getCursorScreenPoint', screen.getCursorScreenPoint()); // 디스플레이의 마우스 포인터 위치
 };
+
+const shellTest = () => {
+  const { shell } = electron;
+  const homedir = os.homedir();
+  console.log('home dir', homedir);
+  const downloaddir = path.resolve(homedir, './capture_download');
+  console.log('download dir', downloaddir);
+  if (fs.existsSync(`${downloaddir}`)) {
+    console.log('exist');
+  } else {
+    fs.mkdirSync(downloaddir);
+    console.log('not exist');
+  }
+
+  shell.showItemInFolder(downloaddir); // finder를 지정 경로로 열기
+};
 module.exports = {
   screenTest,
+  shellTest,
 };
