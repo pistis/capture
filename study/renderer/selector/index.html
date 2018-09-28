@@ -22,12 +22,14 @@
             height: 100%;
         }
     </style>
-    <link  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css" rel="stylesheet"><!-- need to load local resource -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css" rel="stylesheet"><!-- need to load local resource -->
 </head>
 
 <body>
-    <div id="toolbar"><!-- refactoring by vue.js -->
-        <div class="cmd" data-cmd='copy'>Copy</div>
+    <div id="toolbar">
+        <!-- refactoring by vue.js -->
+        <button class="cmd" data-cmd='copy'>Copy</button>
+        <button class="cmd" data-cmd='download'>Download</button>
     </div>
     <!-- <img id="preview"> -->
     <script type="text/javascript" src="./app.js"></script>

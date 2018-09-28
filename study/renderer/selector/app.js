@@ -1,6 +1,7 @@
 const electron = require('electron');
 const { captureScreen } = require('./capturer');
 const copyToClipboard = require('./copyToClipboard');
+const download = require('./download');
 const { ipcRenderer } = electron;
 const Cropper = require('cropperjs');
 
@@ -12,6 +13,9 @@ const Toolbar = {
       if (target.dataset.cmd === 'copy') {
         this.destroy();
         selector.copy();
+      } else if (target.dataset.cmd === 'download') {
+        this.destroy();
+        selector.download();
       }
     });
     this.cropperBox = document.querySelector('.cropper-crop-box');
@@ -79,10 +83,18 @@ const selector = {
     // left, top, width, height
     // alert(`Copied ${JSON.stringify(cropBoxData, null, 2)}`);
     setTimeout(() => {
-      this.capture(cropBoxData);
+      this._copy(cropBoxData);
     }, 100);
   },
-  capture(cropBoxData) {
+  download() {
+    const cropBoxData = this.cropper.getCropBoxData();
+    this.canvas.remove();
+    this.cropper.destroy();
+    setTimeout(() => {
+      this._download(cropBoxData);
+    }, 100);
+  },
+  _copy(cropBoxData) {
     const imageFormat = 'image/png';
     let originCanvas = null;
     console.time('capture-screen');
@@ -147,9 +159,107 @@ const selector = {
           );
           document.body.appendChild(canvas);
           setTimeout(() => {
-            copyToClipboard(canvas, imageFormat).then(() => {
-              this.exit();
-            });
+            copyToClipboard(canvas, imageFormat)
+              .then(() => {
+                this.exit();
+              })
+              .catch((e) => {
+                this.exit();
+              });
+          }, 1000);
+          console.timeEnd('crop-captured-image');
+
+          // Remove hidden video tag
+          video.remove();
+          try {
+            // Destroy connect to stream
+            stream.getTracks()[0].stop();
+          } catch (e) {
+            throw e;
+          }
+        };
+        // video.src = URL.createObjectURL(stream);
+        console.time('video-stream-load');
+        video.srcObject = stream; // old browser may not have this property
+        document.body.appendChild(video);
+      })
+      .catch((e) => {
+        console.log('exception capture', e);
+        //  만약 사용자가 권한요청에 거부하거나 사용할 수 있는 미디어 장치가 없다면 promise는 rejected 상태로 PermissionDeniedError 또는 NotFoundError 를 반환합니다.
+      });
+  },
+  _download(cropBoxData) {
+    const imageFormat = 'image/png';
+    let originCanvas = null;
+    console.time('capture-screen');
+    captureScreen(
+      this.displayInfo.id,
+      this.displayInfo.width,
+      this.displayInfo.height
+    )
+      .then((stream) => {
+        console.timeEnd('capture-screen');
+        // Create hidden video tag
+        const video = document.createElement('video');
+        video.style.cssText = 'position:absolute;top:-10000px;left:-10000px;';
+        // Event connected to stream
+        video.onloadedmetadata = () => {
+          console.timeEnd('video-stream-load');
+          // Set video ORIGINAL height (screenshot)
+          video.style.height = video.videoHeight + 'px'; // videoHeight
+          video.style.width = video.videoWidth + 'px'; // videoWidth
+
+          // Create canvas
+          originCanvas = document.createElement('canvas');
+          originCanvas.width = video.videoWidth;
+          originCanvas.height = video.videoHeight;
+          originCanvas.style.cssText = `width: ${originCanvas.width /
+            2}px; height: ${originCanvas.height / 2}px`;
+          document.body.style.cssText = `width: ${originCanvas.width /
+            2}px; height: ${originCanvas.height / 2}px`;
+          const ctx = originCanvas.getContext('2d');
+          // Draw video on canvas
+          console.time('canvas-draw-image-video');
+          ctx.drawImage(video, 0, 0, originCanvas.width, originCanvas.height);
+          originCanvas.style.cssText =
+            'position:absolute;top:0;left:0;width:100%;height:100%;padding:0;margin:0;';
+          document.body.appendChild(originCanvas);
+          console.timeEnd('canvas-draw-image-video');
+
+          console.time('crop-captured-image');
+          // const data = originCanvas.toDataURL(imageFormat);
+          // document.getElementById('preview').setAttribute('src', data); // TODO: 퀄리티가 jimp 사용시보다 좋다.
+          if (document.getElementById('targetCanvas')) {
+            document.getElementById('targetCanvas').remove();
+          }
+          const canvas = document.createElement('canvas');
+          canvas.id = 'targetCanvas';
+          canvas.width = cropBoxData.width * 2;
+          canvas.height = cropBoxData.height * 2;
+          canvas.style.cssText = `position:absolute;top: ${cropBoxData.top /
+            2}px;left: ${cropBoxData.left / 2}px;width: ${cropBoxData.width /
+            2}px; height: ${cropBoxData.height / 2}px;padding:0;margin:0;`;
+          const cropCtx = canvas.getContext('2d');
+          cropCtx.drawImage(
+            originCanvas,
+            cropBoxData.left * 2,
+            cropBoxData.top * 2,
+            cropBoxData.width * 2,
+            cropBoxData.height * 2,
+            0,
+            0,
+            cropBoxData.width * 2,
+            cropBoxData.height * 2
+          );
+          document.body.appendChild(canvas);
+          setTimeout(() => {
+            download(canvas, imageFormat)
+              .then(() => {
+                this.exit();
+              })
+              .catch((e) => {
+                this.exit();
+              });
           }, 1000);
           console.timeEnd('crop-captured-image');
 
