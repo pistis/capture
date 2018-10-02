@@ -46,11 +46,24 @@ const selector = {
       2}px; height: ${this.canvas.height / 2}px`;
     document.body.appendChild(this.canvas);
     this.cropper = new Cropper(this.canvas, {
+      viewMode: 0,
       zoomable: false,
       background: false,
+      modal: false,
+      guides: false,
+      highlight: true,
+      autoCrop: false,
+      movable: true,
+      rotatable: false,
+      zoomable: false,
+      zoomOnWheel: false,
+      cropBoxMovable: false,
+      cropBoxResizable: true,
+      toggleDragModeOnDblclick: false,
+      dragMode: 'crop',
       ready: () => {
         Toolbar.init();
-        Toolbar.show();
+        Toolbar.hide();
       },
       cropstart: () => {
         Toolbar.hide();
@@ -59,22 +72,6 @@ const selector = {
         Toolbar.show();
       },
     });
-    // initCropper(canvas, (event) => {
-    //   console.log(event.detail.x);
-    //   console.log(event.detail.y);
-    //   console.log(event.detail.width);
-    //   console.log(event.detail.height);
-    //   console.log(event.detail.rotate);
-    //   console.log(event.detail.scaleX);
-    //   console.log(event.detail.scaleY);
-    //   // TODO : 일단 완료버튼은 나중에 초기 값으로 복사
-    //   // captureArea(canvas, {
-    //   //   x: event.detail.x,
-    //   //   y: event.detail.y,
-    //   //   w: event.detail.width,
-    //   //   h: event.detail.height,
-    //   // });
-    // });
   },
   copy() {
     const cropBoxData = this.cropper.getCropBoxData();
@@ -142,8 +139,7 @@ const selector = {
           canvas.id = 'targetCanvas';
           canvas.width = cropBoxData.width * 2;
           canvas.height = cropBoxData.height * 2;
-          canvas.style.cssText = `position:absolute;top: ${cropBoxData.top /
-            2}px;left: ${cropBoxData.left / 2}px;width: ${cropBoxData.width /
+          canvas.style.cssText = `position:absolute;top:-10000px;left:-10000px;width: ${cropBoxData.width /
             2}px; height: ${cropBoxData.height / 2}px;padding:0;margin:0;`;
           const cropCtx = canvas.getContext('2d');
           cropCtx.drawImage(
@@ -236,8 +232,7 @@ const selector = {
           canvas.id = 'targetCanvas';
           canvas.width = cropBoxData.width * 2;
           canvas.height = cropBoxData.height * 2;
-          canvas.style.cssText = `position:absolute;top: ${cropBoxData.top /
-            2}px;left: ${cropBoxData.left / 2}px;width: ${cropBoxData.width /
+          canvas.style.cssText = `position:absolute;top:-10000px;left:-10000px;width: ${cropBoxData.width /
             2}px; height: ${cropBoxData.height / 2}px;padding:0;margin:0;`;
           const cropCtx = canvas.getContext('2d');
           cropCtx.drawImage(
