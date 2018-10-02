@@ -3,6 +3,7 @@ const { clipboard, nativeImage } = require('electron');
 const copyToClipboard = (canvas, imageFormat) => {
   return new Promise((resolve, reject) => {
     try {
+      clipboard.writeText('copying...');
       console.time('copy-captured-image');
       const data = canvas.toDataURL(imageFormat);
       const image =

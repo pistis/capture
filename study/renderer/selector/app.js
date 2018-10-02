@@ -2,7 +2,7 @@ const electron = require('electron');
 const { captureScreen } = require('./capturer');
 const copyToClipboard = require('./copyToClipboard');
 const download = require('./download');
-const { ipcRenderer } = electron;
+const { clipboard, ipcRenderer } = electron;
 const Cropper = require('cropperjs');
 
 const Toolbar = {
@@ -79,6 +79,7 @@ const selector = {
     this.cropper.destroy();
     // left, top, width, height
     // alert(`Copied ${JSON.stringify(cropBoxData, null, 2)}`);
+    clipboard.writeText('copying...');
     setTimeout(() => {
       this._copy(cropBoxData);
     }, 100);
