@@ -28,3 +28,7 @@
   - select all, back/front, delete, clone, set style
 - [fabric-js-editor handler](https://github.com/danielktaylor/fabric-js-editor/blob/ebe52d479e778faddc3a385d562ee7d2a8364235/src/js/app/handlers.js)
   - undo/redo
+- [fabric-js-editor handler](https://github.com/danielktaylor/fabric-js-editor/blob/ebe52d479e778faddc3a385d562ee7d2a8364235/src/js/app/page.js)
+  - key, preview, color picker, panel, menu
+- [fabric-js-editor handler](https://github.com/danielktaylor/fabric-js-editor/blob/ebe52d479e778faddc3a385d562ee7d2a8364235/src/js/app/drawing.js)
+  - mouse 이벤트를 활용한 객체 삽입
