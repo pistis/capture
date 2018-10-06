@@ -25,5 +25,6 @@ class Graphics {
     for (const k in this.selectionStyle) {
       this.canvas[k] = this.selectionStyle[k];
     }
+    window.c = this.canvas;
   }
 }
