@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 let selectorWindow = null;
 
-const selectorPath = `${app.getAppPath()}/study/renderer/selector/index.html`; // TODO : need to change real implementation page
+const selectorPath = `${app.getAppPath()}/src/renderer/capturer/index.html`;
 
 const getDownloadDir = () => {
   const homedir = os.homedir();
@@ -72,8 +72,8 @@ const openCaptureWindow = () => {
     selectorWindow.close();
   });
 
+  // TODO : 다이얼로그를 사용하면 멈춘다...
   ipcMain.on('show-save-dialog-capture-image', (event) => {
-    // TODO : 다이얼로그를 사용하면 멈춘다...
     const downloaddir = getDownloadDir();
     console.log('download dir', downloaddir);
     const { dialog } = electron;
