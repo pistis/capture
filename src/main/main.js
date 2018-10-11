@@ -1,6 +1,7 @@
 const electron = require('electron');
 const { app, globalShortcut, ipcMain } = electron;
 const { openCapturer } = require('./openCapturer');
+const { openEditor } = require('./openEditor');
 const { screenTest, shellTest, dialogTest } = require('./test');
 
 const getDisplayInfo = () => {
@@ -28,6 +29,7 @@ const getDisplayInfo = () => {
 app.on('ready', async () => {
   ipcMain.on('open-image-editor', (event, cropBoxData) => {
     console.log(cropBoxData);
+    openEditor(getDisplayInfo(), cropBoxData);
   });
 
   globalShortcut.register('Command+Shift+5', () => {

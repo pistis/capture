@@ -61,7 +61,7 @@ const openCapturer = (displayInfo) => {
     console.log(`closed ${displayInfo.activeDisplayId}`);
   });
 
-  ipcMain.once('close', () => {
+  ipcMain.once('close-capturer-window', () => {
     selectorWindow.close();
   });
 

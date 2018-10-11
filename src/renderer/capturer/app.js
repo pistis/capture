@@ -292,7 +292,7 @@ const selector = {
       });
   },
   exit() {
-    ipcRenderer.send('close');
+    ipcRenderer.send('close-capturer-window');
   },
 };
 
