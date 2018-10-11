@@ -16,6 +16,9 @@ const Toolbar = {
       } else if (target.dataset.cmd === 'download') {
         this.destroy();
         selector.download();
+      } else if (target.dataset.cmd === 'edit') {
+        this.destroy();
+        selector.edit();
       }
     });
     this.cropperBox = document.querySelector('.cropper-crop-box');
@@ -92,12 +95,19 @@ const selector = {
       this._download(cropBoxData);
     }, 100);
   },
+  edit() {
+    const cropBoxData = this.cropper.getCropBoxData();
+    this.canvas.remove();
+    this.cropper.destroy();
+    ipcRenderer.send('open-image-editor', cropBoxData);
+    this.exit();
+  },
   _copy(cropBoxData) {
     const imageFormat = 'image/png';
     let originCanvas = null;
     console.time('capture-screen');
     captureScreen(
-      this.displayInfo.id,
+      this.displayInfo.activeDisplayId,
       this.displayInfo.width,
       this.displayInfo.height
     )
@@ -182,6 +192,7 @@ const selector = {
       })
       .catch((e) => {
         console.log('exception capture', e);
+        ipcRenderer.send('capturer-error-message', e);
         //  만약 사용자가 권한요청에 거부하거나 사용할 수 있는 미디어 장치가 없다면 promise는 rejected 상태로 PermissionDeniedError 또는 NotFoundError 를 반환합니다.
       });
   },
@@ -190,7 +201,7 @@ const selector = {
     let originCanvas = null;
     console.time('capture-screen');
     captureScreen(
-      this.displayInfo.id,
+      this.displayInfo.activeDisplayId,
       this.displayInfo.width,
       this.displayInfo.height
     )
@@ -275,7 +286,9 @@ const selector = {
       })
       .catch((e) => {
         console.log('exception capture', e);
-        //  만약 사용자가 권한요청에 거부하거나 사용할 수 있는 미디어 장치가 없다면 promise는 rejected 상태로 PermissionDeniedError 또는 NotFoundError 를 반환합니다.
+        ipcRenderer.send('capturer-error-message', e);
+        // 만약 사용자가 권한요청에 거부하거나 사용할 수 있는 미디어 장치가 없다면 promise는 rejected 상태로 PermissionDeniedError 또는 NotFoundError 를 반환합니다.
+        // capture할 display id가 매칭되지 않는다면 에러를 발생시킨다.
       });
   },
   exit() {
@@ -286,7 +299,3 @@ const selector = {
 ipcRenderer.on('display', (event, displayInfo) => {
   selector.init(displayInfo);
 });
-
-const captureArea = (originCanvas, rect) => {
-  // TODO : 이름은 나중에
-};

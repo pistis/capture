@@ -6,7 +6,8 @@
   "license": "MIT",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "debug": "electron --inspect=5858 ."
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "prettier-eslint": "^8.8.2"
   },
   "dependencies": {
+    "konva": "^2.4.1",
     "tui-image-editor": "^3.2.1"
   }
 }
