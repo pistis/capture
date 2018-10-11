@@ -55,7 +55,7 @@ const Editor = {
         y: 0,
         image: imageObj,
         width: window.innerWidth,
-        height: window.innerHeight,
+        height: window.innerHeight - TYPES.TOOLBAR.SIZE.HEIGHT,
         draggable: false,
       });
       this.layer.add(this.background);
