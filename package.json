@@ -1,6 +1,6 @@
 {
   "name": "capture",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "pistis (vamalboro@gmail.com)",
   "description": "This is a capture program developed with electron",
   "license": "MIT",
