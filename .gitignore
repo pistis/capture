@@ -20,10 +20,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-/src/renderer/**/*.css
-/src/css
-test*.html
-
 # IDE
 *.sublime-project
 *.sublime-workspace
