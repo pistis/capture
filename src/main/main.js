@@ -27,9 +27,8 @@ const getDisplayInfo = () => {
   };
 };
 app.on('ready', async () => {
-  ipcMain.on('open-image-editor', (event, cropBoxData) => {
-    console.log(cropBoxData);
-    openEditor(getDisplayInfo(), cropBoxData);
+  ipcMain.on('open-image-editor', (event, filePath, cropBoxData) => {
+    openEditor(getDisplayInfo(), filePath, cropBoxData);
   });
 
   globalShortcut.register('Command+Shift+5', () => {
@@ -46,3 +45,9 @@ app.on('will-quit', () => {
 });
 
 app.on('window-all-closed', (event) => event.preventDefault());
+
+app.on('activate', function() {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  openCapturer(getDisplayInfo());
+});

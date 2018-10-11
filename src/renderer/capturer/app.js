@@ -99,8 +99,11 @@ const selector = {
     const cropBoxData = this.cropper.getCropBoxData();
     this.canvas.remove();
     this.cropper.destroy();
-    ipcRenderer.send('open-image-editor', cropBoxData);
-    this.exit();
+    setTimeout(() => {
+      this._download(cropBoxData, (filePath) => {
+        ipcRenderer.send('open-image-editor', filePath, cropBoxData);
+      });
+    }, 100);
   },
   _copy(cropBoxData) {
     const imageFormat = 'image/png';
@@ -196,7 +199,7 @@ const selector = {
         //  만약 사용자가 권한요청에 거부하거나 사용할 수 있는 미디어 장치가 없다면 promise는 rejected 상태로 PermissionDeniedError 또는 NotFoundError 를 반환합니다.
       });
   },
-  _download(cropBoxData) {
+  _download(cropBoxData, callback) {
     const imageFormat = 'image/png';
     let originCanvas = null;
     console.time('capture-screen');
@@ -261,7 +264,10 @@ const selector = {
           document.body.appendChild(canvas);
           setTimeout(() => {
             download(canvas, imageFormat)
-              .then(() => {
+              .then((filePath) => {
+                if (typeof callback === 'function') {
+                  callback(filePath);
+                }
                 this.exit();
               })
               .catch((e) => {

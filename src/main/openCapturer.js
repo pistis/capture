@@ -18,19 +18,9 @@ const selectorPath = `${app.getAppPath()}/src/renderer/capturer/index.html`;
 // };
 
 const openCapturer = (displayInfo) => {
-  // const { screen } = electron;
-  // const displays = screen.getAllDisplays();
-
-  // const activeDisplayId = screen.getDisplayNearestPoint(
-  //   screen.getCursorScreenPoint()
-  // ).id;
-
-  // const pointedDisplay = displays.find((display) => {
-  //   return display.id === activeDisplayId;
-  // });
-
-  // const { bounds } = pointedDisplay;
-  // const { x, y, width, height } = bounds;
+  if (selectorWindow) {
+    return;
+  }
 
   selectorWindow = new BrowserWindow({
     x: displayInfo.x,

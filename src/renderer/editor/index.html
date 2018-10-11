@@ -10,11 +10,28 @@
             margin: 0;
             overflow: hidden;
         }
+        #toolbar {
+            width: 100px;
+            height: 30px;
+            border: 0;
+        }
+        .cmd {
+            width: auto;
+            height: 100%;
+        }
     </style>
 </head>
 
 <body>
-    Hello World
+    <div id="editor"></div>
+    <div>
+        <select id="toolbar">
+            <option value="brush">Brush</option>
+            <option value="eraser">Eraser</option>
+        </select>
+        <button id="copy" class="cmd">copy</button>
+    </div>
+    <script type="text/javascript" src="../lib/js/konva.2.4.1.js"></script>
     <script type="text/javascript" src="./app.js"></script>
 </body>
 

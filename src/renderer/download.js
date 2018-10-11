@@ -33,7 +33,7 @@ const download = (canvas, imageFormat) => {
         message = 'The file has been succesfully saved';
         console.log(message);
         console.timeEnd('download-captured-image');
-        resolve();
+        resolve(filePath);
 
         // let message = '';
         // if (err) {
