@@ -207,9 +207,12 @@ const Editor = {
       y: 0,
       width: 100,
       height: 100,
+      scaleX: 1,
+      scaleY: 1,
       fill: 'transparent',
       stroke: 'red',
       strokeWidth: 4,
+      strokeScaleEnabled: false,
       draggable: true,
     });
     this.layer.add(box);
