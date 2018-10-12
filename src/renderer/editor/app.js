@@ -13,25 +13,91 @@ const TOOLBAR_SIZE = {
 };
 
 const Editor = {
-  initEditor(imagePath, cropBoxData) {
-    this.backgroundSource = imagePath;
+  init(container) {
+    this.backgroundSource = null;
+    this.container = container;
+    this.isDragStart = false;
+    if (!this.container) {
+      throw new Error('need container for initializing');
+    }
     this.stage = new Konva.Stage({
-      container: 'editor',
+      container: this.container,
       width: window.innerWidth,
       height: window.innerHeight - TYPES.TOOLBAR.SIZE.HEIGHT,
     });
 
-    // add canvas element
+    this.backgroundLayer = new Konva.Layer();
     this.layer = new Konva.Layer();
+    this.dragLayer = new Konva.Layer();
+    this.stage.add(this.backgroundLayer);
     this.stage.add(this.layer);
+    this.stage.add(this.dragLayer);
 
-    this.layer.draw();
-
-    this.setBackground();
+    this.setDragEvent();
     this.setToolbar();
-    this.setTransformer();
+    this.addRect(); // TODO : remove
+
+    this.stage.draw();
   },
-  setBackground() {
+  setDragEvent() {
+    // bind stage handlers
+    this.stage.on('mousedown', (evt) => {
+      const keepGoing = this.setTransformer(evt.target);
+      if (!keepGoing) {
+        return;
+      }
+      const shape = evt.target;
+      this.isDragStart = true;
+      shape.moveTo(this.dragLayer);
+      this.stage.draw();
+      shape.startDrag();
+    });
+
+    this.stage.on('mousemove', (evt) => {
+      if (!this.isDragStart) {
+        return;
+      }
+      this.dragLayer.draw();
+    });
+
+    this.stage.on('mouseup', (evt) => {
+      if (!this.isDragStart) {
+        return;
+      }
+      const shape = evt.target;
+      shape.moveTo(this.layer);
+      this.stage.draw();
+      this.isDragStart = false;
+    });
+  },
+  setTransformer(target) {
+    console.log(target.className);
+    if (target === this.background) {
+      console.log('background');
+      this.stage.find('Transformer').destroy();
+      this.layer.draw();
+      return false;
+    }
+
+    if (target.parent && target.parent.className === 'Transformer') {
+      return false;
+    }
+    this.stage.find('Transformer').destroy();
+    const transformer = new Konva.Transformer({
+      //all available options with their default values
+      keepRatio: false,
+      resizeEnabled: true,
+      rotaionsSnaps: [],
+      rotateHandlerOffset: 50,
+    });
+    this.layer.add(transformer);
+    transformer.moveToTop();
+    transformer.attachTo(target);
+    this.layer.draw();
+    return true;
+  },
+  setBackground(imagePath) {
+    this.backgroundSource = imagePath;
     const imageObj = new Image();
     imageObj.onload = () => {
       this.background = new Konva.Image({
@@ -42,29 +108,18 @@ const Editor = {
         height: window.innerHeight - TYPES.TOOLBAR.SIZE.HEIGHT,
         draggable: false,
       });
-      this.layer.add(this.background);
+      this.backgroundLayer.add(this.background);
       this.background.moveToBottom();
-      this.layer.draw();
+      this.backgroundLayer.draw();
     };
     imageObj.src = this.backgroundSource;
   },
   setToolbar() {
-    this.setFreeDrawing();
     this.setCopy();
+    this.setRect();
   },
-  setTransformer() {
-    this.stage.on('click tap', (e) => {
-      if (e.target === this.background) {
-        console.log('background');
-        return;
-      }
-      if (e.target === this.freeDrawingPanel) {
-        console.log('freeDrawingPanel');
-        return;
-      }
-      this.destroyTransformers();
-      this.createTransformater(e.target);
-    });
+  setRect() {
+    // TODO :
   },
   setCopy() {
     document.getElementById('copy').addEventListener('click', (e) => {
@@ -76,6 +131,9 @@ const Editor = {
           this.exit();
         });
     });
+  },
+  exit() {
+    ipcRenderer.send('close-editor-window');
   },
   setFreeDrawing() {
     const canvas = document.createElement('canvas');
@@ -149,50 +207,26 @@ const Editor = {
       y: 0,
       width: 100,
       height: 100,
-      fill: '#00D2FF',
-      stroke: 'black',
+      fill: 'transparent',
+      stroke: 'red',
       strokeWidth: 4,
       draggable: true,
     });
     this.layer.add(box);
     // add cursor styling
-    box.on('mouseover', function() {
-      document.body.style.cursor = 'pointer';
-    });
-    box.on('mouseout', function() {
-      document.body.style.cursor = 'default';
-    });
-  },
-  destroyTransformers() {
-    const transformers = this.stage.find('Transformer');
-    for (let n = 0; n < transformers.length; n++) {
-      transformers[n].destroy();
-    }
-    //don't redraw if there aren't active transformers
-    if (transformers[0] != null) {
-      this.layer.batchDraw();
-    }
-  },
-  createTransformater(target) {
-    const transformer = new Konva.Transformer({
-      //all available options with their default values
-      keepRatio: false,
-      resizeEnabled: true,
-      rotaionsSnaps: [],
-      rotateHandlerOffset: 50,
-    });
-    transformer.attachTo(target);
-    this.layer.add(transformer);
-    this.layer.batchDraw();
-  },
-  exit() {
-    ipcRenderer.send('close-editor-window');
+    // box.on('mouseover', function() {
+    //   document.body.style.cursor = 'pointer';
+    // });
+    // box.on('mouseout', function() {
+    //   document.body.style.cursor = 'default';
+    // });
   },
 };
 
 ipcRenderer.on(
   'display-editor',
   (event, displayInfo, imagePath, cropBoxData) => {
-    Editor.initEditor(imagePath, cropBoxData);
+    Editor.init(document.getElementById('editor'));
+    Editor.setBackground(imagePath);
   }
 );

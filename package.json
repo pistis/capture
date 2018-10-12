@@ -6,8 +6,7 @@
   "license": "MIT",
   "main": "src/main/main.js",
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 ."
+    "start": "electron ."
   },
   "repository": {
     "type": "git",
